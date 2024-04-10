@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+	{% block head %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock %}
+{% block title %}Home Page{% endblock %}
+{% block style %}
+	*{ background-color: #fcfcfc;}
+	.btn{background-color: #b5eaeb; border: none; border-radius:none; width:300px;}
+	.heading{ font-size: 40px; }
+	.welcome{ font-size: 30px; }
+	.container {
+        display: flex;
+        align-items: center;
+        justify-content: center
+      }
+      img {
+        max-width: 90%
+      }
+      .image {
+        flex-basis: 35%
+      }
+      .text {
+	padding-right:450px;
+        font-size: 20px;
+        padding-left: 10px;
+      }
+{% endblock %}
+
+
+{% block content %}
+<br><br>
+    <div class="container">
+      <div class="text">
+        <h1 class = "heading">&nbsp;&nbsp;Home Page </h1>
+	<h2 class = "welcome" >&emsp;Welcome {{ user.username }} </h2>
+	&emsp;&emsp;<a href = "{% url 'create' %}"><button class = "btn">Create Stock Investments</button></a> 
+	<br><br>
+	&emsp;&emsp;<a href = "{% url 'view' %}"><button class = "btn">View Stock Investments</button> </a>
+  <br><br>
+  &emsp;&emsp;<a href = "{% url 'create_crypto' %}"><button class = "btn">Create Crypto Investments</button></a> 
+	<br><br>
+	&emsp;&emsp;<a href = "{% url 'view_crypto' %}"><button class = "btn">View Crypto Investments</button> </a>
+  <br><br>
+      </div>
+     
+    </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+	{% block head %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock %}
+{% block title %}Create Stock Investment{% endblock %}
+{% block style %}
+	*{ background-color: #fcfcfc;}
+	.btn{background-color: #afd7de; }
+	.heading{font-size: 40px; }	
+{% endblock %}
+
+{% block content %}
+<center>
+	<br>
+	<br>
+	<h1 class = "heading">Create Stock Investment </h1>
+	<form method = "POST">
+	{% csrf_token %}
+		<table border = "2">
+			{{ fm.as_table }}
+		</table>
+		<br>
+		<input type = "Submit" value = "Create Stock Investment" class = "btn">
+		
+	</form>
+	{{ msg }}
+	<br>
+	<a href = "{% url 'home' %}"> Back </a>
+
+</center>
+{% endblock %}

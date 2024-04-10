@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+	{% block head %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock %}
+{% block title %}Login Page{% endblock %}
+{% block style %}
+	*{background-color: #fcfcfc; }
+	.field{background-color: #fcfcfc; }
+	.field:hover{background-color: #fcfcfc;}
+	.btn{background-color: #afd7de; }
+	.heading{font-size: 40px; }
+{% endblock %}
+
+
+{% block content %}
+<center>
+	<br><br>
+	<h1 class = "heading">Login Page </h1>
+	<br>
+	<form method = "POST">
+	{% csrf_token %}
+		<input type = "text" name = "un" placeholder = "enter username" required class = "field">
+		<br><br>
+		<input type = "email" name = "em" placeholder = "enter email" required class = "field">
+		<br><br>
+		<input type = "password" name = "pw" placeholder = "enter password" required class = "field">
+		<br> <br>
+		<input type = "submit" value = "Login" class = "btn">
+		<br>
+	</form>
+	{{ msg }}
+</center>
+{% endblock %}

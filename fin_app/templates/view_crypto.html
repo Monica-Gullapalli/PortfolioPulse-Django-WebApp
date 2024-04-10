@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load yfinance_tags %}
+
+{% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock %}
+
+{% block title %}
+    View Page
+{% endblock %}
+
+{% block style %}
+    <style>
+        * {
+            background-color: #fcfcfc;
+        }
+
+        .btn {
+            background-color: #cff7ff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .heading {
+            font-size: 40px;
+        }
+
+        #view {
+            border-collapse: collapse;
+            width: 80%;
+        }
+
+        #view td,
+        #view th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #view tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #view tr:hover {
+            background-color: white;
+        }
+
+        #view th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #afd7de;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <center>
+        <br>
+        <h1 class="heading">View Crypto Investment</h1>
+        <table id="view">
+            <thead>
+                <tr>
+                    <th>Crypto Name</th>
+                    <th>Crypto Number</th>
+                    <th>Crypto Money</th>
+                    <th>Date & Time</th>
+                    <th>Close Price</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                    <tr>
+                        <td>{{ todo.crypto_name }}</td>
+                        <td>{{ todo.crypto_number }}</td>
+                        <td>{{ todo.crypto_money }}</td>
+                        <td>{{ todo.created }}</td>
+                        <td>
+                            {% with ticker=todo.crypto_name %}
+                                {% load_yfinance_data ticker as data %}
+                                {% if data %}
+                                    {% if data %}
+                                        {{ data }}
+                                    {% else %}
+                                        Crypto data not available for ticker "{{ ticker }}"
+                                    {% endif %}
+                                {% else %}
+                                    Crypto not found for ticker "{{ ticker }}"
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>
+                            <a href="{% url 'delete_crypto' id=todo.crypto_id %}" onclick="return confirm('Are you sure?')">
+                                <button class="btn">Delete</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                
+			
+            </tbody>
+        </table>
+        <br>
+        <a href="{% url 'home' %}">Back</a>
+    </center>
+{% endblock %}
