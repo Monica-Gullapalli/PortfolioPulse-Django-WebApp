@@ -1,0 +1,1 @@
+from collector_app.templatetags import yfinance_tags

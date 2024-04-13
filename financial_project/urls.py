@@ -18,6 +18,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from fin_app.views import home, create, view, delete_stock,usignup, ulogin, ulogout, urnp, delete_crypto, create_crypto, view_crypto
+from django.urls import path
+# from analyzer_app.views import plot_graph
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,5 +35,6 @@ urlpatterns = [
     path("view_crypto", view_crypto, name= "view_crypto"),
     path("delete_stock/<int:id>/", delete_stock, name = "delete_stock"),
     path("delete_crypto/<int:id>/", delete_crypto, name = "delete_crypto"),
+    # path('plot_graph/', plot_graph, name='plot_graph'),
     
 ]

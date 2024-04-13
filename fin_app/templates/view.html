@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load yfinance_tags %}
+{% load custom_filters %}
 
 {% block head %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -63,9 +64,10 @@
                 <tr>
                     <th>Stock Name</th>
                     <th>Stock Number</th>
-                    <th>Stock Money</th>
+                    <th>Price per Stock in $</th>
+                    <th>Money in Stock </th>
                     <th>Date & Time</th>
-                    <th>Close Price</th>
+                    <th>Close Price in $</th>
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -74,7 +76,8 @@
                     <tr>
                         <td>{{ todo.stock_name }}</td>
                         <td>{{ todo.stock_number }}</td>
-                        <td>{{ todo.stock_money }}</td>
+                        <td>{{ todo.stock_pps }}</td>
+                        <td>{{ todo.stock_number|multiply:todo.stock_pps|floatformat:2 }}</td>
                         <td>{{ todo.created }}</td>
                         <td>
                             {% with ticker=todo.stock_name %}
@@ -101,5 +104,8 @@
         </table>
         <br>
         <a href="{% url 'home' %}">Back</a>
+        {% comment %} <a href="{% url 'plot_graph' %}">
+            <button class="btn">Plot Graph</button>
+        </a> {% endcomment %}
     </center>
 {% endblock %}

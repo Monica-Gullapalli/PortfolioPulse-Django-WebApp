@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load yfinance_tags %}
+{% load custom_filters %}
 
 {% block head %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -63,9 +64,10 @@
                 <tr>
                     <th>Crypto Name</th>
                     <th>Crypto Number</th>
-                    <th>Crypto Money</th>
+                    <th>Price per crypto in $</th>
+                    <th>Money in Crypto </th>
                     <th>Date & Time</th>
-                    <th>Close Price</th>
+                    <th>Close Price in $</th>
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -74,7 +76,8 @@
                     <tr>
                         <td>{{ todo.crypto_name }}</td>
                         <td>{{ todo.crypto_number }}</td>
-                        <td>{{ todo.crypto_money }}</td>
+                        <td>{{ todo.crypto_ppc }}</td>
+                        <td>{{ todo.crypto_number|multiply:todo.crypto_ppc|floatformat:2 }}</td>
                         <td>{{ todo.created }}</td>
                         <td>
                             {% with ticker=todo.crypto_name %}

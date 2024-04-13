@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "fin_app",
     "collector_app",
+    "analyzer_app",
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,5 @@ EMAIL_HOST_USER = "monicadjango10@gmail.com"
 EMAIL_HOST_PASSWORD = "monica@10django"
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+ASGI_APPLICATION = 'financial_project.routing.application'

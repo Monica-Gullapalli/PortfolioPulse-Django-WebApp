@@ -10,7 +10,7 @@ def load_yfinance_data(ticker):
         data = stock.history(period="1d")
         if not data.empty:
             close_price = data['Close'].iloc[-1]
-            return close_price
+            return float(close_price)
     except Exception as e:
         print(f"Error retrieving data for ticker '{ticker}': {e}")
     return None
