@@ -1,93 +1,70 @@
 import matplotlib
-matplotlib.use('Agg')  # Set the backend to 'Agg' before importing pyplot
+matplotlib.use('Agg')  # Use the Agg backend
+
 import matplotlib.pyplot as plt
-from django.shortcuts import render, redirect
+import numpy as np
+import random
+from django.shortcuts import render
 from fin_app.models import StockModel
-import yfinance as yf
-import io
-import urllib, base64
 
-def plot_graph(request):
-    stocks = StockModel.objects.all()  # Get all stock entries from the database
 
+def stock_graph(request):
+    user = request.user
+    stocks = StockModel.objects.filter(user=user)
+
+    stock_names = []
     stock_pps = []
     close_prices = []
 
     for stock in stocks:
+        stock_names.append(stock.stock_name)
         stock_pps.append(stock.stock_pps)
-        ticker = yf.Ticker(stock.stock_name)  # Create a Ticker object with the stock name
-        history = ticker.history(period="1d")  # Fetch the historical data for the stock
-        if not history.empty:
-            close_price = history["Close"].iloc[-1]  # Get the most recent close price
-            close_prices.append(close_price)
+        close_prices.append(stock.close_price)
 
-    # Check if the dimensions of stock_pps and close_prices are equal
-    if len(stock_pps) != len(close_prices):
-        # Handle the case where dimensions are not equal, e.g., by truncating one of the lists to match the shorter one
-        min_length = min(len(stock_pps), len(close_prices))
-        stock_pps = stock_pps[:min_length]
-        close_prices = close_prices[:min_length]
+    # Determine the desired size of the plot
+    plot_length = len(stock_names) * 0.5  # Adjust the scaling factor as needed
 
-    # Plot the graph
-    plt.plot(stock_pps, close_prices, 'o')
-    plt.xlabel('Stock Price per Share ($)')
-    plt.ylabel('Close Price ($)')
-    plt.title('Stock Price per Share vs Close Price')
-    plt.grid(True)
+    # Create a figure with the desired size
+    fig, ax = plt.subplots(figsize=(6, 6))  # Adjust the height (6) as needed
 
-    # Save the plot to a file
+    # Create an array of indices for the x-axis
+    indices = np.arange(len(stock_names))
+
+    # Width of each bar
+    bar_width = 0.35
+
+    # Assign light blue color for stock_pps bars
+    stock_pps_color = 'lightblue'
+
+    # Assign dark blue color for close price bars
+    close_price_color = 'darkblue'
+
+    # Plotting the bars for stock_pps
+    ax.bar(indices - bar_width/2, stock_pps, bar_width, color=stock_pps_color, label='Stock PPS')
+
+    # Plotting the bars for close_prices (if available)
+    for i in range(len(close_prices)):
+        if close_prices[i] is not None:
+            ax.bar(indices + bar_width/2, close_prices[i], bar_width, color=close_price_color)
+
+    # Set the x-axis tick labels to be the stock names
+    ax.set_xticks(indices)
+    ax.set_xticklabels(stock_names, rotation=90)
+
+    ax.set_xlabel('Stock Names')
+    ax.set_ylabel('Price')
+    ax.set_title('Stock PPS vs Close Price')
+    ax.legend(['Stock PPS', 'Close Price'])
+
+    plt.tight_layout()  # Adjust the layout to prevent overlapping of labels
+
+    # Convert the plot to a base64-encoded string
+    import io
+    import base64
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
-    image_png = buffer.getvalue()
+    plot_image = base64.b64encode(buffer.getvalue()).decode()
     buffer.close()
 
-    graph = base64.b64encode(image_png).decode('utf-8')
-
-    return render(request, 'view_stock_graph.html', {'graph': graph})
-
-
- # Create a corresponding HTML template for the graph
-    
-# matplotlib.use('TkAgg')
-
-# # Create your views here.
-# import matplotlib.pyplot as plt
-# from fin_app.models import StockModel
-# from collector_app.templatetags.yfinance_tags import load_yfinance_data
-# from django.shortcuts import render
-
-
-# from io import BytesIO
-# import base64
-
-# from django.http import HttpResponse
-# from django.template import loader
-# from asgiref.sync import async_to_sync
-# from channels.layers import get_channel_layer
-
-# def plot_graph(request):
-#     user = request.user
-#     stocks = StockModel.objects.filter(user=user)
-
-#     stock_pps_values = [stock.stock_pps for stock in stocks]
-#     close_price_values = [float(load_yfinance_data(stock.stock_name)) if load_yfinance_data(stock.stock_name) is not None else 0.0 for stock in stocks]
-
-#     plt.plot(stock_pps_values, close_price_values)
-#     plt.xlabel('Stock PPS')
-#     plt.ylabel('Close Price')
-#     plt.title('Stock PPS vs. Close Price')
-
-#     # Save the plot as a PNG image
-#     buffer = BytesIO()
-#     plt.savefig(buffer, format='png')
-#     buffer.seek(0)
-#     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-#     plt.close()  # Close the plot to release resources
-
-#     template = loader.get_template('view_stock_graph.html')
-#     context = {'image_base64': image_base64}
-#     html_content = template.render(context, request)
-
-#     # Send the rendered HTML content back to the client
-#     return HttpResponse(html_content)
+    return render(request, 'view_stock_graph.html', {'plot_image': plot_image})

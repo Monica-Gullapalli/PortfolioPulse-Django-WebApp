@@ -2,6 +2,7 @@
 {% load yfinance_tags %}
 {% load custom_filters %}
 
+
 {% block head %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
@@ -104,8 +105,7 @@
         </table>
         <br>
         <a href="{% url 'home' %}">Back</a>
-        <a href="{% url 'plot_graph' %}">
-            <button class="btn">Plot Graph</button>
-        </a>
+        <a href="{% url 'stock_graph' %}"> <button class="btn">Generate Stock Graph</button></a>
+    
     </center>
 {% endblock %}
