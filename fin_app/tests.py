@@ -96,8 +96,25 @@ class FinAppViewsTestCase(TestCase):
         # Check if the correct template is used for rendering the home view
         self.assertTemplateUsed(response, 'home.html')
                 
-    # def test_create_view(self):
-    #     # Write test cases for the create view function
+    def test_create_view(self):
+        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.force_login(user)
+
+        response = self.client.post(reverse('create'), {
+            'stock_name': 'Test Stock',
+            'stock_number': 10,
+            'stock_pps': 100.00,
+    })
+
+        self.assertEqual(response.status_code, 200)  # Assuming successful creation returns HTTP 200
+
+    # Print the response content for debugging
+        print(response.content.decode())
+
+    # Retrieve the created StockModel object and check its existence
+        stock = StockModel.objects.filter(stock_name='Test Stock').first()
+        self.assertIsNotNone(stock)
+        
         
     # def test_delete_stock_view(self):
     #     # Write test cases for the delete_stock view function
