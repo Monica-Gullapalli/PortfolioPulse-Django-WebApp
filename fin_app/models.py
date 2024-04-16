@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 import yfinance as yf
+import yfinance as yf
+from django import template
+
+register = template.Library()
 
 class StockModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -45,12 +49,33 @@ class CryptoModel(models.Model):
     crypto_name = models.CharField(max_length=10000000000)
     crypto_number = models.IntegerField()
     crypto_ppc = models.FloatField(default=0.0)
-    crypto_money = models.FloatField(default = 0.0)
+    crypto_money = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
-    
+    close_price = models.FloatField(default=0.0)  # New field to store close price
+
     def save(self, *args, **kwargs):
         self.crypto_money = self.crypto_number * self.crypto_ppc
+        if self.crypto_name and not self.close_price:
+            # Retrieve and update close price if it's not set
+            try:
+                crypto = yf.Ticker(self.crypto_name)
+                data = crypto.history(period="30d")
+                if not data.empty:
+                    self.close_price = data['Close'].iloc[-1]
+            except Exception as e:
+                print(f"Error retrieving data for ticker '{self.crypto_name}': {e}")
+        elif self.crypto_name and self.close_price:
+            # Update close price if it's already set
+            try:
+                crypto = yf.Ticker(self.crypto_name)
+                data = crypto.history(period="30d")
+                if not data.empty:
+                    updated_close_price = data['Close'].iloc[-1]
+                    if self.close_price != updated_close_price:
+                        self.close_price = updated_close_price
+            except Exception as e:
+                print(f"Error retrieving data for ticker '{self.crypto_name}': {e}")
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.crypto_name} - {self.crypto_number} - {self.crypto_ppc} -  {self.crypto_money}"
+        return f"{self.crypto_name} - {self.crypto_number} - {self.crypto_ppc} - {self.crypto_money}"
