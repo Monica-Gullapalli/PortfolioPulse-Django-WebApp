@@ -54,8 +54,29 @@ class FinAppViewsTestCase(TestCase):
         # Check if the user is authenticated after login
         self.assertTrue(request.user.is_authenticated)
         
-    # def test_ulogout_view(self):
-    #     # Write test cases for the ulogout view function
+    def test_ulogout_view(self):
+        # Create a user for testing logout
+        test_user = User.objects.create_user(username='testuser', email='test@example.com', password='password')
+        
+        # Log in the user before testing logout
+        self.client.login(username='testuser', password='password')
+        
+        # Create a request for logging out
+        request = self.factory.get('/ulogout/')
+        request.user = test_user
+        request.session = self.client.session  # Set the session attribute
+        
+        response = ulogout(request)
+        
+        # Check if the user is redirected after logout
+        self.assertEqual(response.status_code, 302)
+        
+        # Check if the redirection URL is correct
+        self.assertEqual(response.url, reverse('ulogin'))
+        
+        # Check if the user is no longer authenticated after logout
+        self.assertFalse(request.user.is_authenticated)
+        
         
     # def test_urnp_view(self):
     #     # Write test cases for the urnp view function
