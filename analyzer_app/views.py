@@ -1,4 +1,54 @@
-# import matplotlib
+import matplotlib
+matplotlib.use('Agg')  # Set the backend to 'Agg' before importing pyplot
+import matplotlib.pyplot as plt
+from django.shortcuts import render, redirect
+from fin_app.models import StockModel
+import yfinance as yf
+import io
+import urllib, base64
+
+def plot_graph(request):
+    stocks = StockModel.objects.all()  # Get all stock entries from the database
+
+    stock_pps = []
+    close_prices = []
+
+    for stock in stocks:
+        stock_pps.append(stock.stock_pps)
+        ticker = yf.Ticker(stock.stock_name)  # Create a Ticker object with the stock name
+        history = ticker.history(period="1d")  # Fetch the historical data for the stock
+        if not history.empty:
+            close_price = history["Close"].iloc[-1]  # Get the most recent close price
+            close_prices.append(close_price)
+
+    # Check if the dimensions of stock_pps and close_prices are equal
+    if len(stock_pps) != len(close_prices):
+        # Handle the case where dimensions are not equal, e.g., by truncating one of the lists to match the shorter one
+        min_length = min(len(stock_pps), len(close_prices))
+        stock_pps = stock_pps[:min_length]
+        close_prices = close_prices[:min_length]
+
+    # Plot the graph
+    plt.plot(stock_pps, close_prices, 'o')
+    plt.xlabel('Stock Price per Share ($)')
+    plt.ylabel('Close Price ($)')
+    plt.title('Stock Price per Share vs Close Price')
+    plt.grid(True)
+
+    # Save the plot to a file
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+
+    graph = base64.b64encode(image_png).decode('utf-8')
+
+    return render(request, 'view_stock_graph.html', {'graph': graph})
+
+
+ # Create a corresponding HTML template for the graph
+    
 # matplotlib.use('TkAgg')
 
 # # Create your views here.

@@ -1,3 +1,13 @@
+Copy
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Stock Price per Share vs Close Price</h1>
+    <div id="graph-container">
+        <img src="{% static 'analyzer_app/images/graph.png' %}" alt="Graph">
+    </div>
+{% endblock %}
+
 {% comment %} <html>
 <head>
 
