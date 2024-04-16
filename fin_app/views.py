@@ -58,6 +58,30 @@ def ulogout(request):
 	logout(request)
 	return redirect("ulogin")
 
+def urnp(request):
+	if request.method == "POST":
+		un = request.POST.get("un")
+		em = request.POST.get("em")
+		try:
+			usr = User.objects.get(email = em)
+			pw = ""	
+			text = "0123456789"
+			for i in range(6):
+				pw = pw + text[randrange(len(text))]
+			print (pw)
+			subject = "Hello again from Financial Portfolio Manager"
+			msg = "Hi again, we've noticed you've requested for "  + str(pw)
+			host = 'monicadjango10@gmail.com'
+			recepient = [em]
+			send_mail(subject, msg, host, recepient)
+			usr.set_password(pw)
+			usr.save()
+			return redirect("ulogin")
+		except User.DoesNotExist:
+			return render(request, "urnp.html", {"msg": "email not registered"})
+	else:
+		return render(request, "urnp.html")
+
 
 # Create your views here.
 def home(request):

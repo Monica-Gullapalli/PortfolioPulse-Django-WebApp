@@ -81,9 +81,21 @@ class FinAppViewsTestCase(TestCase):
     # def test_urnp_view(self):
     #     # Write test cases for the urnp view function
         
-    # def test_home_view(self):
-    #     # Write test cases for the home view function
+    def test_home_view(self):
+        # Create a user for testing
+        test_user = User.objects.create_user(username='testuser', email='test@example.com', password='password')
         
+        # Log in the user before accessing the home view
+        self.client.login(username='testuser', password='password')
+        
+        response = self.client.get(reverse('home'))
+        
+        # Check if the response status code is 200 (OK)
+        self.assertEqual(response.status_code, 200)
+        
+        # Check if the correct template is used for rendering the home view
+        self.assertTemplateUsed(response, 'home.html')
+                
     # def test_create_view(self):
     #     # Write test cases for the create view function
         
