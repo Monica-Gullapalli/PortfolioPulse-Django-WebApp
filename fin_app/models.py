@@ -45,17 +45,20 @@ class CryptoModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     crypto_id = models.IntegerField(primary_key=True)
     crypto_name = models.CharField(max_length=255)  # Adjust length as needed
-    crypto_number = models.IntegerField()
+    crypto_number = models.IntegerField(null=True)
     crypto_ppc = models.FloatField(default=0.0)
     crypto_money = models.FloatField(default=0.0)
     created = models.DateTimeField(auto_now_add=True)
     close_price = models.FloatField(default=0.0)  # New field to store close price
 
     def save(self, *args, **kwargs):
-        self.crypto_money = self.crypto_number * self.crypto_ppc
-        if self.crypto_name and not self.close_price:
+        if self.crypto_number is not None and self.crypto_ppc is not None:
+            self.crypto_money = self.crypto_number * self.crypto_ppc
+        elif self.crypto_name and not self.close_price:
             self.update_close_price()
         super().save(*args, **kwargs)
+        
+  
 
     def update_close_price(self):
         try:

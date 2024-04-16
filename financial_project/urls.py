@@ -36,5 +36,6 @@ urlpatterns = [
     path("delete_stock/<int:id>/", delete_stock, name = "delete_stock"),
     path("delete_crypto/<int:id>/", delete_crypto, name = "delete_crypto"),
     path('stock_graph/', views.stock_graph, name='stock_graph'),
+    path('crypto_graph/', views.crypto_graph, name = 'crypto_graph'),
     
 ]
