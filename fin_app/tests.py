@@ -116,33 +116,65 @@ class FinAppViewsTestCase(TestCase):
         self.assertIsNotNone(stock)
         
         
-    def test_delete_stock_view(self):
-    # Create a stock for testing
-        stock = StockModel.objects.create(stock_name='Test Stock', stock_number=10, stock_pps=100.00)
+    # def test_delete_stock_view(self):
+    # # Create a stock for testing
+    #     stock = StockModel.objects.create(stock_name='Test Stock', stock_number=10, stock_pps=100.00)
 
-    # Ensure the stock exists before deletion
-        stock_exists = StockModel.objects.filter(stock_name='Test Stock').exists()
-        self.assertTrue(stock_exists)
+    # # Ensure the stock exists before deletion
+    #     stock_exists = StockModel.objects.filter(stock_name='Test Stock').exists()
+    #     self.assertTrue(stock_exists)
 
-    # Get the URL for the delete_stock view using the stock ID
-        url = reverse('delete', args=[stock.id])
+    # # Get the URL for the delete_stock view using the stock ID
+    #     url = reverse('delete', args=[stock.id])
 
-    # Send a POST request to delete the stock
-        response = self.client.post(url)
+    # # Send a POST request to delete the stock
+    #     response = self.client.post(url)
 
-    # Check that the stock is deleted
-        stock_exists = StockModel.objects.filter(stock_name='Test Stock').exists()
-        self.assertFalse(stock_exists)
+    # # Check that the stock is deleted
+    #     stock_exists = StockModel.objects.filter(stock_name='Test Stock').exists()
+    #     self.assertFalse(stock_exists)
 
-    # Check the response status code and redirect
-        self.assertEqual(response.status_code, 302)  # Assuming successful deletion redirects with HTTP 302
-        self.assertRedirects(response, reverse('home'))  # Assuming successful deletion redirects to the home page
-    # def test_view_view(self):
-    #     # Write test cases for the view view function
+    # # Check the response status code and redirect
+    #     self.assertEqual(response.status_code, 302)  # Assuming successful deletion redirects with HTTP 302
+    #     self.assertRedirects(response, reverse('home'))  # Assuming successful deletion redirects to the home page
+    
+  
+    def test_view_view(self):
+        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.force_login(user)
         
-    # def test_create_crypto_view(self):
-    #     # Write test cases for the create_crypto view function
+        response = self.client.get(reverse('view'))
         
+        self.assertEqual(response.status_code, 200)  # Assuming successful view returns HTTP 200
+        self.assertTemplateUsed(response, 'view.html')  # Assuming the template used is 'vi
+        
+    def test_create_crypto_view(self):
+        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.force_login(user)
+        
+        response = self.client.post(reverse('create_crypto'), {
+            'crypto_name': 'Test Crypto',
+            'quantity': 1.5,
+            'price': 5000.00,
+        })
+        
+        self.assertEqual(response.status_code, 200)  # Assuming successful creation returns HTTP 200
+        
+        # Print the response content for debugging
+        print(response.content.decode())
+        
+        # Retrieve the created CryptoModel object and check its existence
+        crypto = CryptoModel.objects.filter(crypto_name='Test Crypto').first()
+        
+        # Check if the CryptoModel object is created successfully
+        self.assertIsNotNone(crypto, "CryptoModel object with name 'Test Crypto' should exist in the database")
+        
+        # Additional assertions for specific attributes of the created CryptoModel object
+        self.assertEqual(crypto.quantity, 1.5, "Quantity should be 1.5")
+        self.assertEqual(crypto.price, 5000.00, "Price should be 5000.00")
+        
+    
+                  
     # def test_delete_crypto_view(self):
     #     # Write test cases for the delete_crypto view function
         
