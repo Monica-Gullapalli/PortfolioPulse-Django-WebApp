@@ -1,5 +1,6 @@
 from django.test import TestCase
-
+from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from django.http import HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
@@ -181,3 +182,99 @@ class FinAppViewsTestCase(TestCase):
     # def test_view_crypto_view(self):
     #     # Write test cases for the view_crypto view function
 
+    def test_stock_model_query(self):
+        # Create a user (you can use Django's User model or any custom user model)
+        user = User.objects.create(username='testuser')
+        
+        # Create a StockModel object associated with the user
+        stock = StockModel.objects.create(user=user, stock_name='Test Stock 1', stock_number=10, stock_pps=100.00)
+        
+        # Query the StockModel objects associated with the user
+        stocks = StockModel.objects.filter(user=user)
+        
+        # Assert that the queried StockModel object exists and has the correct attributes
+        self.assertEqual(stocks.count(), 1)
+        queried_stock = stocks.first()
+        self.assertEqual(queried_stock.stock_name, 'Test Stock 1')
+        self.assertEqual(queried_stock.stock_number, 10)
+        self.assertEqual(queried_stock.stock_pps, 100.00)
+        
+        
+    def test_create_crypto_view(self):
+        # Create a User for testing purposes
+        user = User.objects.create_user(username='testuser', password='testpassword')
+        
+        # Create a CryptoModel object with user_id assigned
+        crypto = CryptoModel.objects.create(user_id=user.id, crypto_name='Test Crypto', crypto_number=10, crypto_ppc=100.00)
+        
+        # Query the CryptoModel objects with the name 'Test Crypto'
+        queried_crypto = CryptoModel.objects.filter(crypto_name='Test Crypto').first()
+        
+        # Check if the queried CryptoModel object exists in the database
+        self.assertIsNotNone(queried_crypto, "CryptoModel object with name 'Test Crypto' should exist in the database")
+     
+        
+    def test_delete_stock_view(self):
+    # Create a user for testing
+        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.force_login(user)
+    
+    # Create a StockModel object to be deleted
+        stock = StockModel.objects.create(user=user, stock_name='Stock to Delete', stock_number=5, stock_pps=50.00)
+    
+    # Get the URL for the delete_stock view using the stock ID
+        url = reverse('delete_stock', args=[stock.pk])  # Use 'pk' instead of 'id'
+    
+    # Send a POST request to delete the stock
+        response = self.client.post(url)
+    
+    # Check if the stock is deleted successfully
+        self.assertFalse(StockModel.objects.filter(stock_name='Stock to Delete').exists())
+    
+    # Check if the user is redirected after deletion
+        self.assertEqual(response.status_code, 302)  # Assuming successful deletion redirects with HTTP 302
+        self.assertRedirects(response, reverse('view'))  # Assuming successful deletion redirects to the view page
+    
+
+
+
+    def test_delete_crypto_view(self):
+        # Create a user for testing
+        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.force_login(user)
+        
+        # Create a CryptoModel object to be deleted
+        crypto = CryptoModel.objects.create(user=user, crypto_name='Crypto to Delete', crypto_number=3, crypto_ppc=200.00)
+        
+        # Get the URL for the delete_crypto view using the crypto ID
+        try:
+            url = reverse('delete_crypto', kwargs={'id': crypto.pk})
+        except NoReverseMatch:
+            self.fail("Reverse for 'delete_crypto' not found.")
+        
+        # Send a POST request to delete the crypto
+        response = self.client.post(url)
+        
+        # Check if the crypto is deleted successfully
+        self.assertFalse(CryptoModel.objects.filter(crypto_name='Crypto to Delete').exists())
+        
+        # Check if the user is redirected after deletion
+        self.assertEqual(response.status_code, 302)  # Assuming successful deletion redirects with HTTP 302
+        self.assertRedirects(response, reverse('view_crypto'))  # Assuming successful deletion redirects to the view_crypto page                
+
+
+
+    def test_view_crypto_view(self):
+        # Create a user for testing
+        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+        self.client.force_login(user)
+        
+        response = self.client.get(reverse('view_crypto'))
+        
+        # Check if the response status code is 200 (OK)
+        self.assertEqual(response.status_code, 200)  # Assuming successful view returns HTTP 200
+        
+        # Check if the correct template is used for rendering the view_crypto page
+        self.assertTemplateUsed(response, 'view_crypto.html')  # Assuming the template used is 'view_crypto.html'
+
+    
