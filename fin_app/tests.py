@@ -18,6 +18,8 @@ from .forms import StockForm, CryptoForm
 from .views import usignup, ulogin, ulogout, urnp, home, create, delete_stock, view, create_crypto, delete_crypto, view_crypto
 from django.test import RequestFactory
 
+
+
 class FinAppViewsTestCase(TestCase):
     
     def setUp(self):
@@ -277,4 +279,20 @@ class FinAppViewsTestCase(TestCase):
         # Check if the correct template is used for rendering the view_crypto page
         self.assertTemplateUsed(response, 'view_crypto.html')  # Assuming the template used is 'view_crypto.html'
 
-    
+
+    def test_invalid_create_crypto_form(self):
+            # Test case for creating a CryptoModel object with invalid form data
+            user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword')
+            self.client.force_login(user)
+            
+            response = self.client.post(reverse('create_crypto'), {
+                'crypto_name': '',  # Invalid empty value
+                'quantity': -1.5,  # Invalid negative value
+                'price': 'invalid',  # Invalid non-numeric value
+            })
+            
+            # Check if the form is invalid and does not create a CryptoModel object
+            self.assertFalse(CryptoModel.objects.filter(user=user).exists())
+            
+            # Check if the response status code is appropriate (e.g., 200 for form validation errors)
+            self.assertEqual(response.status_code, 200)  # Assuming form validation errors return HTTP 200
