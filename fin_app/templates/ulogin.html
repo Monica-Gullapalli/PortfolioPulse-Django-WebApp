@@ -54,14 +54,14 @@
             color: #fff;
         }
         
-.form-control {
-    border: 2px solid #ffc107;
-    border-radius: 30px;
-    padding: 5px; /* Adjusted padding to control length */
-    font-size: 16px;
-    margin-top: 5px;
-    outline: none; /* Remove default outline */
-}
+        .form-control {
+            border: 2px solid #ffc107;
+            border-radius: 30px;
+            padding: 5px; /* Adjusted padding to control length */
+            font-size: 16px;
+            margin-top: 5px;
+            outline: none; /* Remove default outline */
+        }
         .form-control:focus {
             border-color: #ff6b6b;
             box-shadow: none;
@@ -75,6 +75,9 @@
             border-radius: 10px; /* Adjusted border radius for the card */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adjusted shadow for depth */
             padding: 10px; /* Adjusted padding inside the card */
+            
+            /* Change opacity of the box */
+            opacity: 0.8; /* Adjust the value for the desired opacity (0.1 to 1) */
         }
         
     </style>
@@ -89,21 +92,21 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-            {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'ulogout' %}">Logout</a>
               </li>
-            {% else %}
+          {% else %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'usignup' %}">Sign Up</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'ulogin' %}">Login</a>
               </li>
-            {% endif %}
+          {% endif %}
         </ul>
       </div>
     </nav>
@@ -137,4 +140,4 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </body>
-</html>
+</html>```
