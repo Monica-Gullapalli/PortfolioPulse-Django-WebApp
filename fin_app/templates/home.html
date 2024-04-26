@@ -1,46 +1,117 @@
-{% extends 'base.html' %}
-
-	{% block head %}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock %}
-{% block title %}Home Page{% endblock %}
-{% block style %}
-	*{ background-color: #fcfcfc;}
-	.btn{background-color: #b5eaeb; border: none; border-radius:none; width:300px;}
-	.heading{ font-size: 40px; }
-	.welcome{ font-size: 30px; }
-	.container {
-        display: flex;
-        align-items: center;
-        justify-content: center
-      }
-      img {
-        max-width: 90%
-      }
-      .image {
-        flex-basis: 35%
-      }
-      .text {
-	padding-right:450px;
-        font-size: 20px;
-        padding-left: 10px;
-      }
-{% endblock %}
-
-
-{% block content %}
-<br><br>
-    <div class="container">
-      <div class="text">
-        <h1 class = "heading">&nbsp;&nbsp;Home Page </h1>
-	<h2 class = "welcome" >&emsp;Welcome {{ user.username }} </h2>
-	&emsp;&emsp;<a href = "{% url 'create' %}"><button class = "btn">Create Stock Investments</button></a> 
-	<br><br>
-	&emsp;&emsp;<a href = "{% url 'view' %}"><button class = "btn">View Stock Investments</button> </a>
-  <br><br>
-  &emsp;&emsp;<a href = "{% url 'create_crypto' %}"><button class = "btn">Create Crypto Investments</button></a> 
-	<br><br>
-	&emsp;&emsp;<a href = "{% url 'view_crypto' %}"><button class = "btn">View Crypto Investments</button> </a>
-  <br><br>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portfolio Pulse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            font-family: "Arial", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-image: url('https://plus.unsplash.com/premium_photo-1679923813998-6603ee2466c5?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-color: #f8f9fa;
+            color: #333;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .navbar {
+            background-color: #343a40;
+            padding: 15px 0;
+            border-bottom: 1px solid #495057;
+        }
+        .navbar-brand {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 20px;
+            font-family: 'Arial Black', sans-serif;
+        }
+        .navbar-nav .nav-link {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffc107;
+        }
+        .btn {
+            background-color: #ffc107;
+            color: #343a40;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #ff6b6b;
+            color: #fff;
+        }
+        .form-control {
+            border: 2px solid #ffc107;
+            border-radius: 30px;
+            padding: 15px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .form-control:focus {
+            border-color: #ff6b6b;
+            box-shadow: none;
+        }
+        
+        .container {
+            margin-top: 50px;
+        }
+        
+    </style>
+</head> 
+<body>
+    <nav class="navbar navbar-expand-lg">
+      <a class="navbar-brand" href="#">
+        Portfolio Pulse
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'ulogout' %}">Logout</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'usignup' %}">Sign Up</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'ulogin' %}">Login</a>
+              </li>
+            {% endif %}
+        </ul>
       </div>
-     
+    </nav>
+    
+    <div class="container">
+        <h1 class="heading">Home Page</h1>
+        <h2 class="welcome">Welcome, {{ user.username }}</h2>
+
+        <a href="{% url 'create' %}" class="btn">Create Stock Investments</a>
+        <a href="{% url 'view' %}" class="btn">View Stock Investments</a>
+        <a href="{% url 'create_crypto' %}" class="btn">Create Crypto Investments</a>
+        <a href="{% url 'view_crypto' %}" class="btn">View Crypto Investments</a>
     </div>
-{% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>
