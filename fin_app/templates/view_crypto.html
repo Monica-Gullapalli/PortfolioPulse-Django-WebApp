@@ -1,78 +1,154 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+
 {% load yfinance_tags %}
 {% load custom_filters %}
-
-{% block head %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-{% endblock %}
-
-{% block title %}
-    View Page
-{% endblock %}
-
-{% block style %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * {
-            background-color: #fcfcfc;
+			font-family: "Arial", sans-serif;
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+			background-color: #f8f9fa;
+			color: #333;
+		}
+		.navbar {
+			background-color: #343a40;
+			padding: 15px 0;
+			border-bottom: 1px solid #495057;
+		}
+		.navbar-brand {
+			color: #fff;
+			font-size: 24px;
+			font-weight: bold;
+            margin-right: 20px; /* Add space before project name */
+            font-family: 'Arial Black', sans-serif; /* Different font for project name */
+		}
+		.navbar-nav .nav-link {
+			color: #fff;
+			font-size: 18px;
+			font-weight: bold;
+			margin-left: 15px;
+		}
+		.navbar-nav .nav-link:hover {
+		    color: #ffc107;
+		}
+		.btn {
+		    background-color: #ffc107;
+		    color: #343a40;
+		    border: none;
+		    border-radius: 30px;
+		    padding: 10px 20px;
+		    font-size: 16px;
+		    font-weight: bold;
+		    cursor: pointer;
+		}
+		.btn:hover {
+		    background-color: #ff6b6b;
+		    color: #fff;
+		}
+		.form-control {
+			border: 2px solid #ffc107;
+			border-radius: 30px;
+			padding: 15px 20px;
+			font-size: 16px;
+			margin-top: 20px;
+		}
+        .form-control:focus {
+            border-color: #ff6b6b;
+            box-shadow: none;
         }
-
-        .btn {
-            background-color: #cff7ff;
-            border: none;
-            border-radius: 4px;
+        
+        .container {
+            margin-top: 50px;
         }
+        
 
-        .heading {
-            font-size: 40px;
-        }
+        
 
-        #view {
+        table {
+            width: 100%;
             border-collapse: collapse;
-            width: 80%;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        #view td,
-        #view th {
-            border: 1px solid #ddd;
-            padding: 8px;
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
         }
 
-        #view tr:nth-child(even) {
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        tr:nth-child(even) {
             background-color: #f2f2f2;
         }
 
-        #view tr:hover {
-            background-color: white;
-        }
-
-        #view th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
-            background-color: #afd7de;
-            color: white;
+        tr:hover {
+            background-color: #e9ecef;
         }
     </style>
-{% endblock %}
-
-{% block content %}
-    <center>
-        <br>
-        <h1 class="heading">View Crypto Investment</h1>
-        <table id="view">
-            <thead>
-                <tr>
-                    <th>Crypto Name</th>
-                    <th>Crypto Number</th>
-                    <th>Price per crypto in $</th>
-                    <th>Money in Crypto </th>
-                    <th>Date & Time</th>
-                    <th>Close Price in $</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for todo in todos %}
+</head> 
+<body>
+    <nav class="navbar navbar-expand-lg">
+      <a class="navbar-brand" href="#">
+        Portfolio Pulse
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'ulogout' %}">Logout</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'usignup' %}">Sign Up</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'ulogin' %}">Login</a>
+              </li>
+            {% endif %}
+        </ul>
+      </div>
+    </nav>
+    
+    <div class="container">
+        <center>
+            <br>
+            <h1 class="heading">View Crypto Investment</h1>
+            <table id="view">
+                <thead>
+                    <tr>
+                        <th>Crypto Name</th>
+                        <th>Crypto Number</th>
+                        <th>Price per crypto in $</th>
+                        <th>Money in Crypto </th>
+                        <th>Date & Time</th>
+                        <th>Close Price in $</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for todo in todos %}
                     <tr>
                         <td>{{ todo.crypto_name }}</td>
                         <td>{{ todo.crypto_number }}</td>
@@ -94,19 +170,27 @@
                             {% endwith %}
                         </td>
                         <td>
-                            <a href="{% url 'delete_crypto' id=todo.crypto_id %}" onclick="return confirm('Are you sure?')">
-                                <button class="btn">Delete</button>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                
-			
-            </tbody>
-        </table>
-        <br>
-        <a href="{% url 'home' %}">Back</a>
-        <a href="{% url 'crypto_graph' %}"> <button class="btn">Generate Crypto Graph</button></a>
-    
-    </center>
-{% endblock %}
+                            a href="{% url 'delete_crypto' id=todo.crypto_id %}" onclick="return confirm('Are you sure?')">
+                            <button class="btn">Delete</button>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            
+        
+        </tbody>
+    </table>
+    <br>
+    <a href="{% url 'home' %}"><button class="btn">Back</button></a>
+    <a href="{% url 'crypto_graph' %}"> <button class="btn">Generate Crypto Graph</button></a>
+
+</center>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</body>
+</html>  
+
+
