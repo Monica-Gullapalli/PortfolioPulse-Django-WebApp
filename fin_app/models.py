@@ -4,6 +4,7 @@ import yfinance as yf
 import yfinance as yf
 from django import template
 
+
 register = template.Library()
 
 
@@ -13,6 +14,8 @@ register = template.Library()
 from django.db import models
 from django.contrib.auth.models import User
 import yfinance as yf
+import redis
+import json
 
 class StockModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -46,6 +49,17 @@ class StockModel(models.Model):
                         self.close_price = updated_close_price
             except Exception as e:
                 print(f"Error retrieving data for ticker '{self.stock_name}': {e}")
+        
+        r = redis.Redis(host='localhost', port=6379, db=0)
+        form_data = {
+           'stock_name': self.stock_name,
+           'stock_number': self.stock_number,
+           'stock_pps': self.stock_pps,
+           'stock_money': self.stock_money,
+           'close_price': self.close_price,
+       }
+        r.set(f'{self.__class__.__name__}_{self.pk}', json.dumps(form_data))
+        
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -86,6 +100,16 @@ class CryptoModel(models.Model):
                         self.close_price = updated_close_price
             except Exception as e:
                 print(f"Error retrieving data for ticker '{self.crypto_name}': {e}")
+        r = redis.Redis(host='localhost', port=6379, db=0)
+        form_data = {
+           'crypto_name': self.crypto_name,
+           'crypto_number': self.crypto_number,
+           'crypto_ppc': self.crypto_ppc,
+           'crypto_money': self.crypto_money,
+           'close_price': self.close_price,
+       }
+        r.set(f'{self.__class__.__name__}_{self.pk}', json.dumps(form_data))
+        
         super().save(*args, **kwargs)
 
     def __str__(self):

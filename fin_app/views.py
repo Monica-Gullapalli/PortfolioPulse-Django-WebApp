@@ -12,7 +12,9 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
-
+import redis
+import json
+from django.core.cache import cache
 
 
 
@@ -100,7 +102,6 @@ def create(request):
 				todo = form.save(commit = False)
 				todo.user = user
 				todo.save()
-				print(todo)
 				fm = StockForm()
 				return render(request, "create.html", {"fm": fm, "msg": "Stock Investment Added "})
 			else:
@@ -108,6 +109,30 @@ def create(request):
 		else:
 			fm = StockForm()
 			return render(request, "create.html", {"fm":fm})
+
+def save_stock_data(request):
+    if request.method == 'POST':
+        form = StockForm(request.POST)
+        if form.is_valid():
+            # Save form data to the database
+            stock_instance = form.save(commit=False)
+            stock_instance.user = request.user
+            stock_instance.save()
+            
+            # Save relevant data to Redis
+            stock_data = {
+                'stock_name': stock_instance.stock_name,
+                'stock_number': stock_instance.stock_number,
+                'stock_pps': stock_instance.stock_pps,
+                # Add more fields as needed
+            }
+            key = f'stock_data_{request.user.id}'  # Using user ID as part of the key
+            cache.set(key, stock_data)
+            
+            return redirect('home')  # Redirect to home page or any other page as needed
+    else:
+        form = StockForm()
+    return render(request, 'save_stock_data.html', {'form': form})
 
 def delete_stock(request, id):
 	dd = StockModel.objects.get(stock_id=id)

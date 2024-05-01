@@ -1,0 +1,10 @@
+__analyzer_app/__pycache__
+fin_app/migrations/__pycache__
+collector_app/__pycache__
+fin_app/__pycache__
+fin_app/templatetags/__pycache__
+financial_project/__pycache__
+analyzer_app/__pycache__
+analyzer_app/migrations/__pycache__
+collector_app/templatetags/__pycache__
+collector_app/migrations/__pycache__
