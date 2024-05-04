@@ -18,7 +18,8 @@ from .forms import StockForm, CryptoForm
 from .views import usignup, ulogin, ulogout, urnp, home, create, delete_stock, view, create_crypto, delete_crypto, view_crypto
 from django.test import RequestFactory
 
-
+from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 class FinAppViewsTestCase(TestCase):
     
@@ -296,3 +297,22 @@ class FinAppViewsTestCase(TestCase):
             
             # Check if the response status code is appropriate (e.g., 200 for form validation errors)
             self.assertEqual(response.status_code, 200)  # Assuming form validation errors return HTTP 200
+
+    @patch('django.contrib.auth.models.User.objects.create_user')
+    def test_create_view_with_mock_user_creation(self, mock_create_user):
+        # Create a mock User object
+        mock_user = MagicMock()
+        mock_create_user.return_value = mock_user
+        
+        # Your test logic here
+        response = self.client.post(reverse('create'), {
+            'stock_name': 'Test Stock',
+            'stock_number': 10,
+            'stock_pps': 100.00,
+        })
+        
+        # Assertions and verification here
+        self.assertEqual(response.status_code, 200)  # Assuming successful creation returns HTTP 200
+        
+        # Verify that the mock User object was created
+        mock_create_user.assert_called_once_with(username='testuser', email='test@example.com', password='testpassword')
