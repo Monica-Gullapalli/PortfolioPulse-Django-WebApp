@@ -19,8 +19,8 @@
 | Product environment | [Link](http://gullapallimonica.pythonanywhere.com/usignup/) | PythonAnywhere is our deployment platform |
 | Integration tests | [Link](https://github.com/CSCI-5828-S24/Fse-finalproject-Group20/blob/main/analyzer_app/tests.py) | Test_stock_graph_no_stocks, test_invalid_stock_data and more |
 | Using mock objects or any test doubles | [Link](https://github.com/CSCI-5828-S24/Fse-finalproject-Group20/blob/main/fin_app/tests.py) | Line 301 to 318 |
-| Continuous integration | [Link](https://github.com/CSCI-5828-S24/Fse-finalproject-Group20/deployments) | Successful CI on the vercel deployment (Cannot keep it running because of price) so hosted on PythonAnywhere instead |
+| Continuous integration | [Link]([(https://blog.pythonanywhere.com/87/)]) | Created a bare repo while deployment in pythonanywhere, wont show on github actions so attached link to the process followed |
 | Production monitoring instrumenting | [Link](https://www.pythonanywhere.com/user/GullapalliMonica/webapps/#tab_id_gullapallimonica_pythonanywhere_com) | URL only accessible to developer, but images have been included in presentation for proof |
 | Acceptance tests | [Link](https://github.com/CSCI-5828-S24/Fse-finalproject-Group20/blob/main/acceptance_tests/acc_tests.py) | Test_user_signup, test_user_login, test_user_logout using selenium |
 | Event collaboration messaging | [Link](https://github.com/CSCI-5828-S24/Fse-finalproject-Group20/blob/main/financial_project/settings.py) | From line number 139-147 |
-| Continuous delivery | [Link](https://github.com/CSCI-5828-S24/Fse-finalproject-Group20/deployments) | Successful CD on the vercel deployment (Cannot keep it running because of price) so hosted on PythonAnywhere instead |
+| Continuous delivery | [Link]([(https://blog.pythonanywhere.com/87/)]) | Created a bare repo while deployment in pythonanywhere, wont show on github actions so attached link to the process followed |
